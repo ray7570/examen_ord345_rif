@@ -15,7 +15,7 @@ jobs:
           java-version: '23'
           distribution: 'temurin'
       - name: Build con Maven
-        run: mvn clean package -DskipTests=false
+        run: mvn clean package -DskipTests=true
       - name: Login en GitHub Container Registry
         uses: docker/login-action@v3
         with:

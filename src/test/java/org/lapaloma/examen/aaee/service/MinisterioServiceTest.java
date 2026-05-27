@@ -22,6 +22,7 @@ class MinisterioServiceTest {
     @BeforeEach
     void setUp() {
         fakeDAO = new FakeMinisterioDAO();
+        fakeDAO.limpiarDatos(); // Evita la contaminación de datos entre tests
         ministerioService = new MinisterioService(fakeDAO);
     }
 
@@ -94,6 +95,11 @@ class MinisterioServiceTest {
 
         private List<Ministerio> data = new ArrayList<>();
 
+        // Limpia la lista interna antes de cada ejecución de test
+        public void limpiarDatos() {
+            this.data.clear();
+        }
+
         @Override
         public List<Ministerio> obtenerListaMinisterios() {
             return new ArrayList<>(data);
@@ -114,7 +120,5 @@ class MinisterioServiceTest {
                     .findFirst()
                     .orElse(null);
         }
-
     }
-
 }

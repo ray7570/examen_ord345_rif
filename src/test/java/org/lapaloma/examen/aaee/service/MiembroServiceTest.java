@@ -22,6 +22,7 @@ class MiembroServiceTest {
     @BeforeEach
     void setUp() {
         fakeDAO = new FakeMiembroDAO();
+        fakeDAO.limpiarDatos(); // Evita la contaminación de datos entre tests
         miembroService = new MiembroService(fakeDAO);
     }
 
@@ -122,6 +123,11 @@ class MiembroServiceTest {
 
         private List<Miembro> data = new ArrayList<>();
 
+        // Limpia la lista interna antes de cada ejecución de test
+        public void limpiarDatos() {
+            this.data.clear();
+        }
+
         @Override
         public List<Miembro> obtenerListaMiembros() {
             return new ArrayList<>(data);
@@ -145,7 +151,5 @@ class MiembroServiceTest {
                     .findFirst()
                     .orElse(null);
         }
-
     }
-
 }

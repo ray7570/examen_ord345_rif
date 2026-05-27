@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  database:
+    image: mysql:${MYSQL_VERSION}
+    container_name: ${MYSQL_CONTAINER_NAME}
+    restart: always
+    environment:
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    ports:
+      - "${MYSQL_EXTERNAL_PORT}:${MYSQL_INTERNAL_PORT}"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - network_gobierno
+
+  api_rest:
+    image: ${GHCR_IMAGE}
+    container_name: ${API_CONTAINER_NAME}
+    restart: always
+    depends_on:
+      - database
+    ports:
+      - "${API_EXTERNAL_PORT}:8080"
+    environment:
+      # Spring Boot detecta estas propiedades estándar para conectarse a la BBDD
+      SPRING_DATASOURCE_URL: jdbc:mysql://database:${MYSQL_INTERNAL_PORT}/${MYSQL_DATABASE}?allowPublicKeyRetrieval=true&useSSL=false
+      SPRING_DATASOURCE_USERNAME: ${MYSQL_USER}
+      SPRING_DATASOURCE_PASSWORD: ${MYSQL_PASSWORD}
+    networks:
+      - network_gobierno
+
+volumes:
+  mysql_data:
+
+networks:
+  network_gobierno:
+    driver: bridge
